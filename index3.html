@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPLATO - Menú Estudiantil</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="container" style="max-width: 1100px; padding-top: 2rem; padding-bottom: 4rem;">
+        
+        <!-- Botón para volver al inicio -->
+        <div style="margin-bottom: 2rem;">
+            <a href="index.html" style="background: rgba(0, 210, 211, 0.15); border: 1px solid #00d2d3; color: #00d2d3; padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">
+                ← Volver al Inicio
+            </a>
+        </div>
+
+        <!-- Encabezado del Menú Estudiantil -->
+        <section class="welcome-section" style="margin-bottom: 2.5rem;">
+            <div class="welcome-card" style="padding: 3rem 2rem; text-align: center;">
+                <h2 style="font-size: 2.8rem; margin-bottom: 0.8rem; font-weight: 900;">Menú de Cafetería 🍽️</h2>
+                <p style="font-size: 1.25rem; color: #cbd5e1; max-width: 700px; margin: 0 auto;">
+                    Explora los platos disponibles hoy, realiza tu pedido sin hacer filas y consulta tu turno en tiempo real.
+                </p>
+            </div>
+        </section>
+
+        <!-- Secciones del Menú Dinámico -->
+        <section class="menu-preview" id="menu" style="margin-bottom: 3rem;">
+            <div class="section-header" style="margin-bottom: 2rem;">
+                <h3 style="font-size: 2.2rem;">Platos Disponibles</h3>
+                <p style="font-size: 1.15rem; color: #94a3b8;">Actualizados en tiempo real por el personal de cafetería</p>
+            </div>
+            
+            <div class="category-grid" id="studentMenuList" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;"></div>
+            
+            <p id="noMenuText" style="text-align: center; color: #cbd5e1; font-size: 1.2rem; margin-top: 2rem; display: none;">
+                No hay platos registrados en este momento. El personal de cafetería los actualizará pronto.
+            </p>
+        </section>
+
+        <!-- Sección de Pedidos Activos con Búsqueda Rápida -->
+        <section class="welcome-section" id="pedidos">
+            <div class="welcome-card" style="text-align: left; padding: 3rem;">
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                    <h3 style="font-size: 2rem; color: #ffffff; margin: 0;">📋 Mis Pedidos Activos</h3>
+                    
+                    <!-- Campo de Búsqueda Rápida -->
+                    <div style="flex: 1; max-width: 320px; min-width: 250px;">
+                        <input type="text" id="searchOrderInput" oninput="cargarMisPedidos()" placeholder="🔍 Buscar por nombre..." style="width: 100%; padding: 0.7rem 1rem; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #ffffff; font-size: 0.95rem;">
+                    </div>
+                </div>
+
+                <p id="noOrdersText" style="color: #cbd5e1; font-size: 1.15rem;">
+                    Aún no has realizado ningún pedido. ¡Elige una opción del menú de arriba!
+                </p>
+                
+                <div id="activeOrdersList" style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            cargarMenuEstudiante();
+            cargarMisPedidos();
+            setInterval(cargarMisPedidos, 3000);
+        });
+
+        function cargarMenuEstudiante() {
+            const studentMenuList = document.getElementById("studentMenuList");
+            const noMenuText = document.getElementById("noMenuText");
+            const platosGuardados = JSON.parse(localStorage.getItem("rplato_menu")) || [];
+
+            studentMenuList.innerHTML = "";
+
+            if (platosGuardados.length === 0) {
+                noMenuText.style.display = "block";
+                return;
+            }
+
+            noMenuText.style.display = "none";
+
+            platosGuardados.forEach((plato) => {
+                const tarjeta = document.createElement("div");
+                tarjeta.className = "category-card";
+                tarjeta.style.cssText = "padding: 2.5rem 1.8rem; text-align: center; display: flex; flex-direction: column; justify-content: space-between;";
+                
+                tarjeta.innerHTML = `
+                    <div>
+                        <span style="background: rgba(0, 210, 211, 0.15); color: #00d2d3; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: bold; display: inline-block; margin-bottom: 1rem;">
+                            ${plato.categoria || 'Menú General'}
+                        </span>
+                        <div class="icon" style="font-size: 3.8rem; margin-bottom: 1rem;">${plato.icono || '🍽️'}</div>
+                        <h4 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #ffffff;">${plato.nombre}</h4>
+                        <p style="font-size: 1.05rem; color: #cbd5e1; margin-bottom: 1.2rem; line-height: 1.5;">
+                            ${plato.descripcion}
+                        </p>
+                    </div>
+                    <div>
+                        <strong style="color: #00d2d3; font-size: 1.5rem; display: block; margin-bottom: 1.5rem;">$${plato.precio} COP</strong>
+                        <button class="btn-main" onclick="pedirPlato('${plato.nombre}')" style="width: 100%; border: none; cursor: pointer; font-size: 1.1rem; padding: 0.9rem; border-radius: 10px;">
+                            🛒 Realizar Pedido
+                        </button>
+                    </div>
+                `;
+                studentMenuList.appendChild(tarjeta);
+            });
+        }
+
+        function pedirPlato(nombrePlato) {
+            let nombreEstudiante = prompt("Por favor, ingresa tu nombre y apellido para el pedido:");
+            
+            if (!nombreEstudiante || nombreEstudiante.trim() === "") {
+                alert("Debes ingresar un nombre válido para realizar el pedido.");
+                return;
+            }
+
+            let contador = parseInt(localStorage.getItem("rplato_turno_counter")) || 12;
+            let pedidos = JSON.parse(localStorage.getItem("rplato_pedidos")) || [];
+
+            const nuevoPedido = {
+                id: Date.now(),
+                cliente: nombreEstudiante.trim(),
+                plato: nombrePlato,
+                turno: contador,
+                estado: "En preparación 🍳"
+            };
+
+            pedidos.push(nuevoPedido);
+            localStorage.setItem("rplato_pedidos", JSON.stringify(pedidos));
+            localStorage.setItem("rplato_turno_counter", contador + 1);
+
+            alert(`¡Excelente elección, ${nombreEstudiante}! Tu pedido de "${nombrePlato}" se envió a la cocina (Turno #${contador}).`);
+            cargarMisPedidos();
+        }
+
+        function cargarMisPedidos() {
+            const activeOrdersList = document.getElementById("activeOrdersList");
+            const noOrdersText = document.getElementById("noOrdersText");
+            const searchText = document.getElementById("searchOrderInput").value.toLowerCase();
+            
+            let pedidos = JSON.parse(localStorage.getItem("rplato_pedidos")) || [];
+
+            activeOrdersList.innerHTML = "";
+
+            if (pedidos.length === 0) {
+                if (noOrdersText) {
+                    noOrdersText.style.display = "block";
+                    noOrdersText.innerText = "Aún no has realizado ningún pedido. ¡Elige una opción del menú de arriba!";
+                }
+                return;
+            }
+
+            // Filtrar pedidos según lo que se escriba en el buscador
+            let pedidosFiltrados = pedidos.filter(p => {
+                let nombreCliente = (p.cliente || "").toLowerCase();
+                let nombrePlato = (p.plato || "").toLowerCase();
+                return nombreCliente.includes(searchText) || nombrePlato.includes(searchText);
+            });
+
+            if (pedidosFiltrados.length === 0) {
+                if (noOrdersText) {
+                    noOrdersText.style.display = "block";
+                    noOrdersText.innerText = "No se encontraron pedidos con ese nombre o plato.";
+                }
+                return;
+            }
+
+            if (noOrdersText) noOrdersText.style.display = "none";
+
+            pedidosFiltrados.forEach((pedido) => {
+                const tarjeta = document.createElement("div");
+                let colorEstado = "#f1c40f";
+                if(pedido.estado.includes("Listo")) colorEstado = "#2ecc71";
+                if(pedido.estado.includes("Cancelado")) colorEstado = "#ff6b6b";
+
+                tarjeta.style.cssText = "background: rgba(0, 210, 211, 0.12); border: 2px solid #00d2d3; padding: 1.2rem 1.5rem; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;";
+                
+                tarjeta.innerHTML = `
+                    <div>
+                        <h5 style="color: #ffffff; font-size: 1.25rem; margin-bottom: 0.3rem;">${pedido.plato}</h5>
+                        <p style="color: #cbd5e1; font-size: 0.95rem; margin-bottom: 0.2rem;">Cliente: <strong style="color: #00d2d3;">${pedido.cliente}</strong></p>
+                        <p style="color: #cbd5e1; font-size: 1rem;">
+                            Estado: <span style="color: ${colorEstado}; font-weight: bold;">${pedido.estado}</span>
+                        </p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="background: #00d2d3; color: #0f172a; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 800; font-size: 1rem;">
+                            Turno #${pedido.turno}
+                        </span>
+                        <button onclick="cancelarPedidoEstudiante(${pedido.id})" style="background: rgba(255, 107, 107, 0.2); border: 1px solid #ff6b6b; color: #ff6b6b; padding: 0.5rem 1rem; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                            ❌ Cancelar
+                        </button>
+                    </div>
+                `;
+                activeOrdersList.appendChild(tarjeta);
+            });
+        }
+
+        function cancelarPedidoEstudiante(id) {
+            if (confirm("¿Estás seguro de que deseas cancelar este pedido?")) {
+                let pedidos = JSON.parse(localStorage.getItem("rplato_pedidos")) || [];
+                pedidos = pedidos.filter(p => p.id !== id);
+                localStorage.setItem("rplato_pedidos", JSON.stringify(pedidos));
+                cargarMisPedidos();
+            }
+        }
+    </script>
+
+</body>
+</html>

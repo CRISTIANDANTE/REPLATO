@@ -1,0 +1,359 @@
+/* Reseteo general */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Fondo principal con el logo completo sin recortes */
+body {
+    min-height: 100vh;
+    background-color: #0f172a;
+    background-image: 
+        linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.88)), 
+        url('imagenes/logo.jpeg');
+    background-size: contain;       /* Muestra la imagen completa sin recortar ningún detalle */
+    background-position: top center; /* Centra la imagen desde arriba para que el pato luzca bien */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #ffffff;
+}
+
+/* Encabezado superior */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+}
+
+.brand-name {
+    color: #ffffff;
+    font-size: 1.6rem;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-link:hover, 
+.nav-link.active {
+    color: #00d2d3;
+}
+
+.btn-profile {
+    border: 1px solid #00d2d3;
+    padding: 0.4rem 1.2rem;
+    border-radius: 20px;
+    color: #00d2d3;
+}
+
+.btn-profile:hover {
+    background-color: #00d2d3;
+    color: #0f172a;
+}
+
+/* Contenedor principal */
+.container {
+    max-width: 1000px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+}
+
+/* Sección de Bienvenida */
+.welcome-section {
+    margin-bottom: 3.5rem;
+}
+
+.welcome-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 3.5rem 2rem;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.welcome-card h2 {
+    font-size: 2.5rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.welcome-card p {
+    font-size: 1.15rem;
+    color: #e2e8f0;
+    max-width: 650px;
+    margin: 0 auto 2rem auto;
+    line-height: 1.6;
+}
+
+.welcome-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+}
+
+.btn-main {
+    background-color: #00d2d3;
+    color: #0f172a;
+    padding: 0.9rem 2rem;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 210, 211, 0.3);
+}
+
+.btn-main:hover {
+    background-color: #01a3a4;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    padding: 0.9rem 2rem;
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Categorías del Menú */
+.section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.section-header h3 {
+    font-size: 2rem;
+    color: #ffffff;
+}
+
+.section-header p {
+    color: #cbd5e1;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+.category-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 2rem 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+}
+
+.category-card .icon {
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+}
+
+.category-card h4 {
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+    font-size: 1.3rem;
+}
+
+.category-card p {
+    font-size: 0.95rem;
+    color: #cbd5e1;
+    margin-bottom: 1.5rem;
+}
+
+.btn-category {
+    background-color: transparent;
+    border: 1px solid #00d2d3;
+    color: #00d2d3;
+    padding: 0.6rem 1.4rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-category:hover {
+    background-color: #00d2d3;
+    color: #0f172a;
+}
+
+/* ======================================================
+   ESTILOS EXCLUSIVOS PARA INDEX2.HTML (ACCESO PERSONAL)
+   ====================================================== */
+
+.auth-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.auth-card {
+    max-width: 550px;
+    width: 100%;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(16px);
+    border: 2px solid rgba(0, 210, 211, 0.4);
+    border-radius: 24px;
+    padding: 3.5rem 2.5rem;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(0, 210, 211, 0.2);
+    text-align: center;
+}
+
+.auth-brand {
+    margin-bottom: 2rem;
+}
+
+.auth-logo {
+    width: 75px;
+    height: 75px;
+    background: linear-gradient(135deg, #00d2d3, #01a3a4);
+    color: #0f172a;
+    font-size: 2.8rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin: 0 auto 1.2rem auto;
+    box-shadow: 0 0 20px rgba(0, 210, 211, 0.6);
+}
+
+.auth-brand h2 {
+    font-size: 2.3rem;
+    color: #ffffff;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+}
+
+.auth-brand p {
+    font-size: 1.2rem;
+    color: #cbd5e1;
+}
+
+/* Pestañas de Login / Info */
+.auth-tabs {
+    display: flex;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 6px;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.auth-tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #cbd5e1;
+    padding: 0.9rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.auth-tab.active {
+    background: #00d2d3;
+    color: #0f172a;
+    box-shadow: 0 4px 15px rgba(0, 210, 211, 0.4);
+}
+
+/* Formulario de Contraseña */
+.auth-form h3 {
+    font-size: 1.8rem;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.auth-form label {
+    display: block;
+    font-size: 1.25rem; /* Texto de indicación bien grande */
+    color: #ffffff;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 1.2rem 1.4rem;
+    background: rgba(15, 23, 42, 0.9);
+    border: 2px solid rgba(0, 210, 211, 0.4);
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 1.25rem; /* Texto que se escribe súper visible */
+    margin-bottom: 1.2rem;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.auth-form input:focus {
+    outline: none;
+    border-color: #00d2d3;
+    box-shadow: 0 0 15px rgba(0, 210, 211, 0.6);
+}
+
+.auth-form .btn-main {
+    width: 100%;
+    padding: 1.2rem;
+    font-size: 1.3rem; /* Botón de entrada prominente */
+    letter-spacing: 1px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.auth-back {
+    margin-top: 2rem;
+}
+
+.auth-back .nav-link {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #00d2d3;
+}

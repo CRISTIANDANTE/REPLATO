@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPLATO - Panel de Administración</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="container" style="max-width: 950px; padding-top: 3rem; padding-bottom: 4rem;">
+        
+        <!-- Botones de Navegación del Administrador -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
+            <a href="index.html" style="background: rgba(255, 107, 107, 0.15); border: 1px solid #ff6b6b; color: #ff6b6b; padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; font-weight: bold;">
+                🔒 Cerrar Sesión / Salir
+            </a>
+            <a href="index3.html" style="background: rgba(0, 210, 211, 0.15); border: 1px solid #00d2d3; color: #00d2d3; padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; font-weight: bold;">
+                👁️ Ver Menú de Estudiantes
+            </a>
+        </div>
+
+        <!-- Tarjeta de Bienvenida Admin -->
+        <section class="welcome-section" style="margin-bottom: 2rem;">
+            <div class="welcome-card" style="padding: 2.5rem 2rem; text-align: center;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem; font-weight: 900;">Panel de Control 👨‍🍳</h2>
+                <p style="font-size: 1.15rem; color: #cbd5e1;">Gestiona el menú, despacha los pedidos y controla los recursos o platos desperdiciados.</p>
+            </div>
+        </section>
+
+        <!-- Pestañas de Navegación Interna del Admin -->
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem; justify-content: center; flex-wrap: wrap;">
+            <button id="btnTabOrders" onclick="switchAdminTab('orders')" style="background: #00d2d3; color: #0f172a; padding: 0.8rem 1.5rem; border-radius: 10px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer;">
+                📋 Pedidos Pendientes
+            </button>
+            <button id="btnTabWaste" onclick="switchAdminTab('waste')" style="background: rgba(255, 255, 255, 0.1); color: #ffffff; padding: 0.8rem 1.5rem; border-radius: 10px; border: 1px solid #334155; font-size: 1rem; font-weight: bold; cursor: pointer;">
+                🗑️ Control de Desperdicios
+            </button>
+            <button id="btnTabMenu" onclick="switchAdminTab('menu')" style="background: rgba(255, 255, 255, 0.1); color: #ffffff; padding: 0.8rem 1.5rem; border-radius: 10px; border: 1px solid #334155; font-size: 1rem; font-weight: bold; cursor: pointer;">
+                🍽️ Gestión de Menú
+            </button>
+        </div>
+
+        <!-- PESTAÑA 1: PEDIDOS PENDIENTES -->
+        <section id="sectionOrders" class="welcome-section">
+            <div class="welcome-card" style="text-align: left; padding: 2.5rem;">
+                <h3 style="font-size: 1.8rem; margin-bottom: 1rem; color: #ffffff;">📋 Órdenes Recibidas de Cocina</h3>
+                <p style="color: #cbd5e1; font-size: 1.05rem; margin-bottom: 1.5rem;">Visualiza el nombre del cliente, cambia el estado de los pedidos o cancélalos.</p>
+                
+                <div id="adminOrdersList" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+
+                <p id="noAdminOrders" style="color: #cbd5e1; font-size: 1.1rem; text-align: center; display: none; padding: 2rem 0;">
+                    No hay pedidos pendientes en este momento. ☕
+                </p>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 2: CONTROL DE DESPERDICIOS Y EXCEDENTES -->
+        <section id="sectionWaste" class="welcome-section" style="display: none;">
+            
+            <!-- Resumen Semanal por Días -->
+            <div class="welcome-card" style="text-align: left; padding: 2.5rem; margin-bottom: 2rem; background: rgba(0, 210, 211, 0.05); border: 2px solid rgba(0, 210, 211, 0.3);">
+                <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: #ffffff;">📅 Resumen Semanal de Pérdidas</h3>
+                <p style="color: #cbd5e1; font-size: 1.05rem; margin-bottom: 1.5rem;">Total de platos perdidos agrupados por fecha en la semana.</p>
+                
+                <div id="weeklyWasteSummary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;"></div>
+                <p id="noWeeklySummary" style="color: #cbd5e1; font-size: 1rem; text-align: center; display: none;">Aún no hay datos suficientes para generar el resumen semanal.</p>
+            </div>
+
+            <!-- Formulario de Registro -->
+            <div class="welcome-card" style="text-align: left; padding: 2.5rem; margin-bottom: 2rem;">
+                <h3 style="font-size: 1.8rem; margin-bottom: 1.5rem; color: #ffffff;">📊 Registrar Platos Desperdiciados por Exceso</h3>
+                
+                <form id="addWasteForm" onsubmit="registrarDesperdicio(event)" style="display: flex; flex-direction: column; gap: 1.2rem;">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-weight: bold;">Nombre del Plato o Alimento:</label>
+                        <input type="text" id="wasteDishName" placeholder="Ej: Almuerzo Ejecutivo: Pollo / Arroz sobrante" required style="width: 100%; padding: 0.9rem; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #ffffff; font-size: 1rem;">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-weight: bold;">Cantidad de Platos Perdidos:</label>
+                            <input type="number" id="wasteQuantity" min="1" placeholder="Ej: 5" required style="width: 100%; padding: 0.9rem; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #ffffff; font-size: 1rem;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-weight: bold;">Fecha del Registro:</label>
+                            <input type="date" id="wasteDate" required style="width: 100%; padding: 0.9rem; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #ffffff; font-size: 1rem;">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-weight: bold;">Motivo del Excedente:</label>
+                        <textarea id="wasteReason" placeholder="Ej: Sobreestimación de asistencia de estudiantes en la jornada de la tarde." required rows="2" style="width: 100%; padding: 0.9rem; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #ffffff; font-size: 1rem; resize: vertical;"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-main" style="margin-top: 1rem; border: none; cursor: pointer; padding: 1rem; font-size: 1.1rem; border-radius: 10px;">
+                        💾 Guardar Registro de Desperdicio
+                    </button>
+                </form>
+            </div>
+
+            <!-- Historial de Registros -->
+            <div class="welcome-card" style="text-align: left; padding: 2.5rem;">
+                <h3 style="font-size: 1.8rem; margin-bottom: 1rem; color: #ffffff;">📋 Historial de Excedentes y Pérdidas</h3>
+                <div id="adminWasteList" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                <p id="noAdminWaste" style="color: #cbd5e1; font-size: 1.1rem; text-align: center; display: none; padding: 1.5rem 0;">No hay registros de desperdicios guardados.</p>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 3: GESTIÓN DE MENÚ -->
+        <section id="sectionMenu" class="welcome-section" style="display: none;">
+            <div class="welcome-card" style="text-align: left; padding: 2.5rem; margin-bottom: 2rem;">
+                <h3 style="font-size: 1.8rem; margin-bottom: 1.5rem; color: #ffffff;">➕ Agregar Nuevo Plato</h3>
+                
+                <form id="addDishForm" onsubmit="agregarPlato(event)" style="display: flex; flex-direction: column; gap: 1.2rem;">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-weight: bold;">¿A qué menú pertenece?</label>
+                        <select id="dishCategory" required style="width: 100%; padding: 0.9rem; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #ffffff; font-size: 1rem;">
+                            <option value="" disabled selected>Selecciona una categoría...</option>
+                            <option value="Almuerzos Ejecutivos">🍲 Almuerzos Ejecutivos</option>
+                            <option value="Comidas Rápidas">🍔 Comidas Rápidas</option>
+                            <option value="Bebidas y Jugos">🥤 Bebidas y Jugos</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-weight: bold;">Nombre del Plato:</label>
+                        <input type="text" id="dishName" placeholder="Ej: Pollo Gratinado" required style="width: 100%; padding: 0.9rem; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #ffffff; font-size: 1rem;">
+                    </div>
+
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-weight: bold;">Descripción de Ingredientes:</label>
+                        <textarea id="dishDesc" placeholder="Ej: Sopa de verduras, arroz, frijol y jugo." required rows="3" style="width: 100%; padding: 0.9rem; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #ffffff; font-size: 1rem; resize: vertical;"></textarea>
+                    </div>
+
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; color: #cbd5e1; font-weight: bold;">Precio (COP):</label>
+                        <input type="text" id="dishPrice" placeholder="Ej: 14.000" required style="width: 100%; padding: 0.9rem; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #ffffff; font-size: 1rem;">
+                    </div>
+
+                    <button type="submit" class="btn-main" style="margin-top: 1rem; border: none; cursor: pointer; padding: 1rem; font-size: 1.1rem; border-radius: 10px;">
+                        💾 Guardar y Publicar Plato
+                    </button>
+                </form>
+            </div>
+
+            <div class="welcome-card" style="text-align: left; padding: 2.5rem;">
+                <h3 style="font-size: 1.8rem; margin-bottom: 1rem; color: #ffffff;">📋 Platos Activos</h3>
+                <div id="adminDishList" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+                <p id="noAdminDishes" style="color: #cbd5e1; font-size: 1.1rem; text-align: center; display: none; padding: 1.5rem 0;">No hay platos registrados.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            cargarPedidosAdmin();
+            cargarDesperdiciosAdmin();
+            cargarPlatosAdmin();
+            setInterval(cargarPedidosAdmin, 3000);
+        });
+
+        function switchAdminTab(tab) {
+            const secOrders = document.getElementById("sectionOrders");
+            const secWaste = document.getElementById("sectionWaste");
+            const secMenu = document.getElementById("sectionMenu");
+            
+            const btnOrders = document.getElementById("btnTabOrders");
+            const btnWaste = document.getElementById("btnTabWaste");
+            const btnMenu = document.getElementById("btnTabMenu");
+
+            [btnOrders, btnWaste, btnMenu].forEach(b => {
+                b.style.background = "rgba(255, 255, 255, 0.1)";
+                b.style.color = "#ffffff";
+            });
+
+            secOrders.style.display = "none";
+            secWaste.style.display = "none";
+            secMenu.style.display = "none";
+
+            if(tab === 'orders') {
+                secOrders.style.display = "block";
+                btnOrders.style.background = "#00d2d3";
+                btnOrders.style.color = "#0f172a";
+            } else if(tab === 'waste') {
+                secWaste.style.display = "block";
+                btnWaste.style.background = "#00d2d3";
+                btnWaste.style.color = "#0f172a";
+            } else {
+                secMenu.style.display = "block";
+                btnMenu.style.background = "#00d2d3";
+                btnMenu.style.color = "#0f172a";
+            }
+        }
+
+        // LÓGICA DE PEDIDOS
+        function cargarPedidosAdmin() {
+            const adminOrdersList = document.getElementById("adminOrdersList");
+            const noAdminOrders = document.getElementById("noAdminOrders");
+            let pedidos = JSON.parse(localStorage.getItem("rplato_pedidos")) || [];
+
+            adminOrdersList.innerHTML = "";
+
+            if (pedidos.length === 0) {
+                noAdminOrders.style.display = "block";
+                return;
+            }
+
+            noAdminOrders.style.display = "none";
+
+            pedidos.forEach((pedido) => {
+                const item = document.createElement("div");
+                item.style.cssText = "background: rgba(255, 255, 255, 0.05); border: 1px solid #334155; padding: 1.2rem 1.5rem; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;";
+
+                let colorEstado = "#f1c40f";
+                if(pedido.estado.includes("Listo")) colorEstado = "#2ecc71";
+                if(pedido.estado.includes("Cancelado")) colorEstado = "#ff6b6b";
+
+                item.innerHTML = `
+                    <div>
+                        <span style="background: #00d2d3; color: #0f172a; padding: 0.3rem 0.7rem; border-radius: 12px; font-weight: 800; font-size: 0.9rem;">
+                            Turno #${pedido.turno}
+                        </span>
+                        <h4 style="color: #ffffff; font-size: 1.2rem; margin: 0.5rem 0 0.2rem 0;">${pedido.plato}</h4>
+                        <p style="color: #cbd5e1; font-size: 0.95rem; margin-bottom: 0.2rem;">Cliente: <strong style="color: #00d2d3;">${pedido.cliente || 'Anónimo'}</strong></p>
+                        <p style="color: #cbd5e1; font-size: 0.95rem;">Estado actual: <strong style="color: ${colorEstado};">${pedido.estado}</strong></p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="cambiarEstadoPedido(${pedido.id}, '✅ Listo para entregar')" style="background: rgba(46, 204, 113, 0.2); border: 1px solid #2ecc71; color: #2ecc71; padding: 0.6rem 0.9rem; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                            ✅ Listo
+                        </button>
+                        <button onclick="eliminarPedidoDefinitivo(${pedido.id})" style="background: rgba(255, 107, 107, 0.2); border: 1px solid #ff6b6b; color: #ff6b6b; padding: 0.6rem 0.9rem; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                            ❌ Cancelar
+                        </button>
+                    </div>
+                `;
+                adminOrdersList.appendChild(item);
+            });
+        }
+
+        function cambiarEstadoPedido(id, nuevoEstado) {
+            let pedidos = JSON.parse(localStorage.getItem("rplato_pedidos")) || [];
+            pedidos = pedidos.map(p => {
+                if (p.id === id) p.estado = nuevoEstado;
+                return p;
+            });
+            localStorage.setItem("rplato_pedidos", JSON.stringify(pedidos));
+            cargarPedidosAdmin();
+        }
+
+        function eliminarPedidoDefinitivo(id) {
+            let pedidos = JSON.parse(localStorage.getItem("rplato_pedidos")) || [];
+            pedidos = pedidos.filter(p => p.id !== id);
+            localStorage.setItem("rplato_pedidos", JSON.stringify(pedidos));
+            cargarPedidosAdmin();
+        }
+
+        // LÓGICA DE CONTROL DE DESPERDICIOS Y RESUMEN SEMANAL
+        function registrarDesperdicio(e) {
+            e.preventDefault();
+            const plato = document.getElementById("wasteDishName").value;
+            const cantidad = parseInt(document.getElementById("wasteQuantity").value) || 0;
+            const fecha = document.getElementById("wasteDate").value;
+            const motivo = document.getElementById("wasteReason").value;
+
+            const nuevoRegistro = { plato, cantidad, fecha, motivo };
+            let desperdicios = JSON.parse(localStorage.getItem("rplato_desperdicios")) || [];
+            desperdicios.push(nuevoRegistro);
+
+            localStorage.setItem("rplato_desperdicios", JSON.stringify(desperdicios));
+            alert("¡Registro de desperdicio guardado con éxito!");
+            document.getElementById("addWasteForm").reset();
+            cargarDesperdiciosAdmin();
+        }
+
+        function cargarDesperdiciosAdmin() {
+            const adminWasteList = document.getElementById("adminWasteList");
+            const noAdminWaste = document.getElementById("noAdminWaste");
+            const weeklyWasteSummary = document.getElementById("weeklyWasteSummary");
+            const noWeeklySummary = document.getElementById("noWeeklySummary");
+            
+            let desperdicios = JSON.parse(localStorage.getItem("rplato_desperdicios")) || [];
+
+            // 1. Cargar Historial
+            adminWasteList.innerHTML = "";
+            if (desperdicios.length === 0) {
+                noAdminWaste.style.display = "block";
+            } else {
+                noAdminWaste.style.display = "none";
+                desperdicios.forEach((item, index) => {
+                    const elemento = document.createElement("div");
+                    elemento.style.cssText = "background: rgba(255, 255, 255, 0.05); border: 1px solid #334155; padding: 1.2rem 1.5rem; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;";
+
+                    elemento.innerHTML = `
+                        <div>
+                            <span style="background: rgba(255, 107, 107, 0.15); color: #ff6b6b; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.85rem; font-weight: bold; display: inline-block; margin-bottom: 0.3rem;">
+                                Fecha: ${item.fecha}
+                            </span>
+                            <h4 style="color: #ffffff; font-size: 1.2rem; margin-bottom: 0.2rem;">${item.plato} (${item.cantidad} platos perdidos)</h4>
+                            <p style="color: #cbd5e1; font-size: 0.95rem;">Motivo: ${item.motivo}</p>
+                        </div>
+                        <button onclick="eliminarDesperdicio(${index})" style="background: rgba(255, 107, 107, 0.2); border: 1px solid #ff6b6b; color: #ff6b6b; padding: 0.6rem 1rem; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                            🗑️ Borrar Registro
+                        </button>
+                    `;
+                    adminWasteList.appendChild(elemento);
+                });
+            }
+
+            // 2. Generar Resumen Semanal Agrupado por Fecha
+            weeklyWasteSummary.innerHTML = "";
+            let resumenPorFecha = {};
+            desperdicios.forEach(d => {
+                let cant = parseInt(d.cantidad) || 0;
+                if (!resumenPorFecha[d.fecha]) {
+                    resumenPorFecha[d.fecha] = 0;
+                }
+                resumenPorFecha[d.fecha] += cant;
+            });
+
+            let fechasKeys = Object.keys(resumenPorFecha);
+            if (fechasKeys.length === 0) {
+                noWeeklySummary.style.display = "block";
+            } else {
+                noWeeklySummary.style.display = "none";
+                fechasKeys.sort().forEach(fecha => {
+                    const tarjetaDia = document.createElement("div");
+                    tarjetaDia.style.cssText = "background: rgba(15, 23, 42, 0.7); border: 1px solid #334155; padding: 1rem 1.2rem; border-radius: 10px; text-align: center;";
+                    
+                    tarjetaDia.innerHTML = `
+                        <span style="color: #94a3b8; font-size: 0.9rem; display: block; margin-bottom: 0.3rem;">📅 ${fecha}</span>
+                        <strong style="color: #ff6b6b; font-size: 1.8rem; display: block;">${resumenPorFecha[fecha]}</strong>
+                        <span style="color: #cbd5e1; font-size: 0.85rem;">Platos Perdidos</span>
+                    `;
+                    weeklyWasteSummary.appendChild(tarjetaDia);
+                });
+            }
+        }
+
+        function eliminarDesperdicio(index) {
+            if (confirm("¿Estás seguro de eliminar este registro de desperdicio?")) {
+                let desperdicios = JSON.parse(localStorage.getItem("rplato_desperdicios")) || [];
+                desperdicios.splice(index, 1);
+                localStorage.setItem("rplato_desperdicios", JSON.stringify(desperdicios));
+                cargarDesperdiciosAdmin();
+            }
+        }
+
+        // LÓGICA DE GESTIÓN DEL MENÚ
+        function agregarPlato(e) {
+            e.preventDefault();
+            const categoria = document.getElementById("dishCategory").value;
+            const nombre = document.getElementById("dishName").value;
+            const descripcion = document.getElementById("dishDesc").value;
+            const precio = document.getElementById("dishPrice").value;
+
+            let icono = '🍽️';
+            if (categoria === "Almuerzos Ejecutivos") icono = '🍲';
+            else if (categoria === "Comidas Rápidas") icono = '🍔';
+            else if (categoria === "Bebidas y Jugos") icono = '🥤';
+
+            const nuevoPlato = { categoria, nombre, descripcion, precio, icono };
+            let platos = JSON.parse(localStorage.getItem("rplato_menu")) || [];
+            platos.push(nuevoPlato);
+
+            localStorage.setItem("rplato_menu", JSON.stringify(platos));
+            alert("¡Plato guardado y publicado con éxito!");
+            document.getElementById("addDishForm").reset();
+            cargarPlatosAdmin();
+        }
+
+        function cargarPlatosAdmin() {
+            const adminDishList = document.getElementById("adminDishList");
+            const noAdminDishes = document.getElementById("noAdminDishes");
+            let platos = JSON.parse(localStorage.getItem("rplato_menu")) || [];
+
+            adminDishList.innerHTML = "";
+            if (platos.length === 0) {
+                noAdminDishes.style.display = "block";
+                return;
+            }
+            noAdminDishes.style.display = "none";
+
+            platos.forEach((plato, index) => {
+                const item = document.createElement("div");
+                item.style.cssText = "background: rgba(255, 255, 255, 0.05); border: 1px solid #334155; padding: 1.2rem 1.5rem; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;";
+
+                item.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span style="font-size: 2.5rem;">${plato.icono}</span>
+                        <div>
+                            <span style="background: rgba(0, 210, 211, 0.15); color: #00d2d3; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.85rem; font-weight: bold; display: inline-block; margin-bottom: 0.3rem;">
+                                ${plato.categoria}
+                            </span>
+                            <h4 style="color: #ffffff; font-size: 1.2rem; margin-bottom: 0.2rem;">${plato.nombre}</h4>
+                            <p style="color: #cbd5e1; font-size: 0.95rem; margin-bottom: 0.3rem;">${plato.descripcion}</p>
+                            <strong style="color: #00d2d3; font-size: 1.05rem;">$${plato.precio} COP</strong>
+                        </div>
+                    </div>
+                    <button onclick="eliminarPlato(${index})" style="background: rgba(255, 107, 107, 0.2); border: 1px solid #ff6b6b; color: #ff6b6b; padding: 0.6rem 1rem; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                        🗑️ Eliminar
+                    </button>
+                `;
+                adminDishList.appendChild(item);
+            });
+        }
+
+        function eliminarPlato(index) {
+            if (confirm("¿Estás seguro de que deseas eliminar este plato del menú?")) {
+                let platos = JSON.parse(localStorage.getItem("rplato_menu")) || [];
+                platos.splice(index, 1);
+                localStorage.setItem("rplato_menu", JSON.stringify(platos));
+                cargarPlatosAdmin();
+            }
+        }
+    </script>
+
+</body>
+</html>
